@@ -8,52 +8,52 @@ import type { Schema } from '../amplify/data/resource';
 const client = generateClient<Schema>();
 
 function App() {
-    const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+    const [todos, setTodos] = useState<Array<Schema['Todo']['type']>>([]);
 
     useEffect(() => {
         client.models.Todo.observeQuery().subscribe({
-            next: (data) => setTodos([...data.items]),
+            next: (data) => setTodos([...data.items])
         });
     }, []);
 
 
     function deleteTodo(id: string) {
-        client.models.Todo.delete({id})
+        client.models.Todo.delete({ id })
     }
 
     function createTodo() {
-        client.models.Todo.create({content: window.prompt("Todo content")});
+        client.models.Todo.create({ content: window.prompt('Todo content') });
     }
 
-    return (
+    return (<Authenticator>
+        { ({
+            signOut,
+            user
+        }) => (
+            <main>
+                <h1>{ user?.signInDetails?.loginId }'s todos</h1>
+                <button onClick={ createTodo }>+ new</button>
+                <ul>
+                    { todos.map((todo) => (
+                        <li
+                            onClick={ () => deleteTodo(todo.id) }
+                            key={ todo.id }>{ todo.content }</li>
+                    )) }
+                </ul>
+                <div>
+                    🥳 App successfully hosted. Try creating new TODO's.
+                    <br/>
+                    <a href="https://next-release-dev.d1ywzrxfkb9wgg.amplifyapp.com/react/start/quickstart/vite-react-app/#step-2-add-delete-to-do-functionality">
+                        Review next step of this tutorial.
+                    </a>
+                </div>
+                <div>
+                    <button onClick={ signOut }>Sign out</button>
+                </div>
+            </main>
 
-        <Authenticator>
-            {({signOut, user}) => (
-                <main>
-                    <h1>{ user?.signInDetails?.loginId }'s todos</h1>
-                    <button onClick={ createTodo }>+ new</button>
-                    <ul>
-                        { todos.map((todo) => (
-                            <li
-                                onClick={ () => deleteTodo(todo.id) }
-                                key={ todo.id }>{ todo.content }</li>
-                        )) }
-                    </ul>
-                    <div>
-                        🥳 App successfully hosted. Try creating new TODO's.
-                        <br/>
-                        <a href="https://next-release-dev.d1ywzrxfkb9wgg.amplifyapp.com/react/start/quickstart/vite-react-app/#step-2-add-delete-to-do-functionality">
-                            Review next step of this tutorial.
-                        </a>
-                    </div>
-                    <div>
-                        <button onClick={ signOut }>Sign out</button>
-                    </div>
-                </main>
-
-            ) }
-        </Authenticator>
-    );
+        ) }
+    </Authenticator>);
 }
 
 export default App;
