@@ -9,7 +9,6 @@ export const auth = defineAuth({
         email: {
             verificationEmailStyle: 'LINK',
             verificationEmailSubject: 'Welcome! Verify your email!'
-            // verificationEmailBody: (link: string) => `Your verification link is ${ link }.`
         }
     },
     multifactor: {
